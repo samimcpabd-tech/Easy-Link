@@ -1,0 +1,876 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easy Link — Corporate Digitalization Solutions</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Syne:wght@400;700;800&family=Hind+Siliguri:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --green:#4CAF50; --black:#0D0D0D; --white:#FFFFFF;
+  --grey:#1A1A1A; --grey-mid:#2C2C2C; --grey-light:#A0A0A0; --accent:#A8FF47;
+}
+html { scroll-behavior: smooth; }
+body { font-family:'Space Grotesk',sans-serif; background:var(--black); color:var(--white); overflow-x:hidden; }
+body.bn { font-family:'Hind Siliguri',sans-serif; }
+
+/* ══════════════════════════════════════
+   NAVBAR  — desktop-first, no conflicts
+══════════════════════════════════════ */
+#navbar {
+  position: fixed; top:0; left:0; right:0; z-index:1000;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 16px 56px; gap: 20px;
+  background: rgba(13,13,13,0.92);
+  backdrop-filter: blur(14px);
+  border-bottom: 1px solid rgba(255,255,255,0.07);
+  transition: padding .3s;
+}
+
+/* Logo */
+.nav-logo {
+  display: flex; align-items: center; gap: 10px;
+  font-family:'Syne',sans-serif; font-weight:800; font-size:1.4rem;
+  color:var(--white); text-decoration:none; flex-shrink:0;
+}
+.nav-logo-icon { width:34px; height:34px; flex-shrink:0; }
+.nav-logo-icon svg { width:100%; height:100%; }
+.nav-logo .g { color:var(--green); }
+
+/* Desktop link list */
+.nav-links {
+  display: flex;        /* ALWAYS flex on desktop */
+  align-items: center;
+  gap: 28px;
+  list-style: none;
+  margin: 0; padding: 0;
+  flex: 1;
+  justify-content: center;
+}
+.nav-links a {
+  color: var(--grey-light); text-decoration: none;
+  font-size: .84rem; font-weight:500; letter-spacing:.04em;
+  white-space: nowrap; transition: color .2s;
+}
+.nav-links a:hover { color: var(--accent); }
+.nav-links .cta {
+  background: var(--green); color: var(--black) !important;
+  padding: 7px 18px; border-radius: 4px; font-weight:700;
+  transition: background .2s;
+}
+.nav-links .cta:hover { background: var(--accent); }
+
+/* Right cluster: lang toggle + hamburger */
+.nav-end {
+  display: flex; align-items: center; gap: 12px; flex-shrink: 0;
+}
+
+/* EN | BN pill */
+.lang-pill {
+  display: flex; align-items: center;
+  border: 1px solid rgba(255,255,255,0.2); border-radius: 20px;
+  overflow: hidden;
+}
+.lang-pill button {
+  background: transparent; border: none; cursor: pointer;
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: .74rem; font-weight:700; letter-spacing:.07em;
+  padding: 5px 11px; color: var(--grey-light);
+  transition: background .2s, color .2s; line-height:1;
+}
+.lang-pill button.on { background: var(--green); color: var(--black); }
+.lang-pill .sep { width:1px; background: rgba(255,255,255,0.18); align-self:stretch; }
+
+/* Hamburger — hidden on desktop */
+.nav-burger {
+  display: none; flex-direction:column; gap:5px;
+  background:none; border:none; cursor:pointer; padding:5px;
+}
+.nav-burger span {
+  display: block; width:23px; height:2px;
+  background: var(--white); border-radius:2px;
+  transition: transform .3s, opacity .3s;
+}
+.nav-burger.open span:nth-child(1) { transform:translateY(7px) rotate(45deg); }
+.nav-burger.open span:nth-child(2) { opacity:0; }
+.nav-burger.open span:nth-child(3) { transform:translateY(-7px) rotate(-45deg); }
+
+/* Mobile fullscreen drawer — off-screen via transform, never display:none */
+.nav-drawer {
+  position: fixed; inset:0; z-index:999;
+  background: rgba(13,13,13,0.98);
+  display: flex; flex-direction:column;
+  padding: 96px 32px 40px;
+  gap: 4px;
+  transform: translateX(100%);
+  transition: transform .35s cubic-bezier(.4,0,.2,1);
+  visibility: hidden; pointer-events: none;
+}
+.nav-drawer.open {
+  transform: translateX(0);
+  visibility: visible; pointer-events: auto;
+}
+.nav-drawer a {
+  color:var(--white); text-decoration:none;
+  font-size:1.5rem; font-weight:700; padding:14px 0;
+  border-bottom:1px solid rgba(255,255,255,0.07);
+  display: block; transition:color .2s;
+}
+.nav-drawer a:hover { color:var(--green); }
+.nav-drawer .d-cta {
+  margin-top:20px; background:var(--green); color:var(--black) !important;
+  padding:14px 28px; border-radius:6px; display:inline-block;
+  font-size:1rem !important; text-align:center;
+}
+.nav-drawer .d-lang {
+  display:flex; margin-bottom:20px; width:fit-content;
+  border:1px solid rgba(255,255,255,0.2); border-radius:20px; overflow:hidden;
+}
+.nav-drawer .d-lang button {
+  background:transparent; border:none; cursor:pointer;
+  font-family:'Space Grotesk',sans-serif; font-size:.8rem; font-weight:700;
+  padding:7px 14px; color:var(--grey-light); transition:background .2s,color .2s;
+}
+.nav-drawer .d-lang button.on { background:var(--green); color:var(--black); }
+.nav-drawer .d-lang .sep { width:1px; background:rgba(255,255,255,0.2); align-self:stretch; }
+
+/* ════════════  MOBILE BREAKPOINT  ════════════ */
+@media (max-width: 900px) {
+  #navbar { padding: 13px 20px; }
+  .nav-links { display: none !important; }   /* hide desktop links */
+  .nav-burger { display: flex; }             /* show hamburger */
+}
+
+/* ══════════════════════════════════════
+   HERO
+══════════════════════════════════════ */
+#hero {
+  min-height:100vh; display:flex; align-items:center;
+  padding:110px 56px 72px; position:relative; overflow:hidden;
+}
+.hero-grid {
+  position:absolute; inset:0; pointer-events:none; z-index:0;
+  background-image:
+    linear-gradient(rgba(76,175,80,0.04) 1px,transparent 1px),
+    linear-gradient(90deg,rgba(76,175,80,0.04) 1px,transparent 1px);
+  background-size:60px 60px;
+  animation:gridDrift 20s linear infinite;
+}
+@keyframes gridDrift { 0%{transform:translateY(0)} 100%{transform:translateY(60px)} }
+.hero-glow {
+  position:absolute; top:-200px; right:-100px; width:700px; height:700px;
+  background:radial-gradient(circle,rgba(76,175,80,0.12) 0%,transparent 70%);
+  pointer-events:none; z-index:0;
+  animation:glowPulse 6s ease-in-out infinite;
+}
+@keyframes glowPulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.1);opacity:.7} }
+.hero-body { position:relative; z-index:1; max-width:860px; }
+
+.hero-eyebrow {
+  display:inline-flex; align-items:center; gap:8px;
+  font-size:.74rem; font-weight:600; letter-spacing:.18em; text-transform:uppercase;
+  color:var(--accent); margin-bottom:26px;
+  opacity:0; animation:fadeUp .8s .3s ease forwards;
+}
+.hero-eyebrow::before { content:''; width:26px; height:1px; background:var(--accent); }
+.hero-h1 {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(2.8rem,7vw,6.2rem); line-height:1; letter-spacing:-.02em;
+  margin-bottom:26px;
+  opacity:0; animation:fadeUp .9s .5s ease forwards;
+}
+.hero-h1 .ln { display:block; }
+.hero-h1 .gw { color:var(--green); }
+.hero-h1 .ow { -webkit-text-stroke:2px var(--green); color:transparent; }
+.hero-sub {
+  font-size:1rem; color:var(--grey-light); line-height:1.75; max-width:500px;
+  margin-bottom:38px;
+  opacity:0; animation:fadeUp .9s .75s ease forwards;
+}
+.hero-btns {
+  display:flex; gap:14px; flex-wrap:wrap;
+  opacity:0; animation:fadeUp .9s .95s ease forwards;
+}
+.btn-p {
+  background:var(--green); color:var(--black); font-weight:700;
+  font-size:.9rem; padding:13px 28px; border-radius:4px; text-decoration:none;
+  display:inline-block; transition:background .2s,transform .2s;
+}
+.btn-p:hover { background:var(--accent); transform:translateY(-2px); }
+.btn-g {
+  border:1px solid rgba(255,255,255,.2); color:var(--white);
+  font-size:.9rem; padding:13px 28px; border-radius:4px; text-decoration:none;
+  display:inline-block; transition:border-color .2s,color .2s;
+}
+.btn-g:hover { border-color:var(--green); color:var(--green); }
+
+.hero-stats {
+  position:absolute; bottom:56px; right:56px; z-index:1;
+  display:flex; gap:44px;
+  opacity:0; animation:fadeIn 1s 1.4s ease forwards;
+}
+.hs { text-align:right; }
+.hs-num {
+  font-family:'Syne',sans-serif; font-size:2.6rem; font-weight:800;
+  color:var(--white); line-height:1; display:block;
+}
+.hs-num .ac { color:var(--accent); }
+.hs-lbl { font-size:.7rem; color:var(--grey-light); letter-spacing:.1em; text-transform:uppercase; }
+
+@keyframes fadeUp { from{opacity:0;transform:translateY(24px)} to{opacity:1;transform:translateY(0)} }
+@keyframes fadeIn { from{opacity:0} to{opacity:1} }
+
+/* ══════════════════════════════════════
+   TICKER
+══════════════════════════════════════ */
+.ticker-wrap { background:var(--green); padding:11px 0; overflow:hidden; }
+.ticker-inner { display:flex; white-space:nowrap; animation:ticker 28s linear infinite; }
+.ticker-item {
+  display:inline-flex; align-items:center; gap:14px; padding:0 36px;
+  font-family:'Syne',sans-serif; font-weight:700;
+  font-size:.78rem; letter-spacing:.12em; text-transform:uppercase; color:var(--black);
+}
+.ticker-dot { width:5px; height:5px; background:var(--black); border-radius:50%; flex-shrink:0; }
+@keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ══════════════════════════════════════
+   SECTIONS — shared
+══════════════════════════════════════ */
+section { padding:88px 56px; }
+.sec-label {
+  display:flex; align-items:center; gap:10px;
+  font-size:.7rem; font-weight:600; letter-spacing:.2em; text-transform:uppercase;
+  color:var(--green); margin-bottom:14px;
+}
+.sec-label::before { content:''; width:22px; height:1px; background:var(--green); }
+h2.sec-title {
+  font-family:'Syne',sans-serif; font-weight:800;
+  font-size:clamp(1.9rem,4vw,3rem); line-height:1.1; letter-spacing:-.02em; margin-bottom:12px;
+}
+
+/* ── WHY US ── */
+#why { background:var(--grey); }
+.why-grid { display:grid; grid-template-columns:1fr 1fr; gap:72px; align-items:start; margin-top:52px; }
+.why-intro p { color:var(--grey-light); font-size:.96rem; line-height:1.8; margin-bottom:26px; }
+.pain-list { list-style:none; display:flex; flex-direction:column; gap:15px; }
+.pain-item {
+  display:flex; align-items:flex-start; gap:14px; padding:17px;
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07); border-radius:8px;
+  transition:border-color .3s,transform .3s;
+}
+.pain-item:hover { border-color:var(--green); transform:translateX(5px); }
+.pain-icon {
+  width:36px; height:36px; background:rgba(76,175,80,.1);
+  border:1px solid rgba(76,175,80,.3); border-radius:8px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0; font-size:.95rem;
+}
+.pain-text strong { display:block; font-size:.87rem; margin-bottom:3px; }
+.pain-text span { font-size:.79rem; color:var(--grey-light); line-height:1.5; }
+.diff-list { display:flex; flex-direction:column; gap:18px; }
+.diff-card {
+  padding:22px 24px; background:var(--grey-mid);
+  border-left:3px solid var(--green); border-radius:0 8px 8px 0; transition:background .3s;
+}
+.diff-card:hover { background:rgba(76,175,80,.08); }
+.diff-card h4 { font-size:.92rem; font-weight:700; margin-bottom:5px; }
+.diff-card p { font-size:.79rem; color:var(--grey-light); line-height:1.6; }
+
+/* ── SERVICES ── */
+#services { background:var(--black); }
+.svc-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:2px; margin-top:40px; }
+.svc-card {
+  background:var(--grey); padding:30px 24px;
+  border:1px solid rgba(255,255,255,.06);
+  position:relative; overflow:hidden; transition:background .3s,transform .3s;
+}
+.svc-card::after { content:''; position:absolute; bottom:0; left:0; width:0; height:2px; background:var(--green); transition:width .4s; }
+.svc-card:hover::after { width:100%; }
+.svc-card:hover { background:var(--grey-mid); transform:translateY(-4px); }
+.svc-num { font-family:'Syne',sans-serif; font-size:.68rem; font-weight:700; letter-spacing:.15em; color:rgba(76,175,80,.4); margin-bottom:12px; transition:color .3s; }
+.svc-card:hover .svc-num { color:var(--accent); }
+.svc-icon { font-size:1.7rem; display:block; margin-bottom:12px; }
+.svc-card h3 { font-size:.95rem; font-weight:700; margin-bottom:7px; }
+.svc-card p { font-size:.79rem; color:var(--grey-light); line-height:1.6; }
+
+/* ── STATS ── */
+#stats {
+  background:var(--green); padding:60px 56px;
+  display:grid; grid-template-columns:repeat(4,1fr); gap:28px; text-align:center;
+}
+.stat-big { font-family:'Syne',sans-serif; font-size:clamp(2.6rem,5vw,4.2rem); font-weight:800; color:var(--black); line-height:1; display:block; margin-bottom:7px; }
+.stat-desc { font-size:.77rem; font-weight:600; color:rgba(0,0,0,.6); letter-spacing:.05em; text-transform:uppercase; }
+
+/* ── PRODUCTS ── */
+#products { background:var(--grey); }
+.prod-scroll { display:flex; gap:15px; overflow-x:auto; padding-bottom:12px; margin-top:40px; scroll-snap-type:x mandatory; }
+.prod-scroll::-webkit-scrollbar { height:3px; }
+.prod-scroll::-webkit-scrollbar-thumb { background:var(--green); border-radius:2px; }
+.prod-card {
+  flex:0 0 175px; scroll-snap-align:start; background:var(--grey-mid);
+  border:1px solid rgba(255,255,255,.07); border-radius:10px; padding:24px 16px;
+  text-align:center; transition:border-color .3s,transform .3s;
+}
+.prod-card:hover { border-color:var(--green); transform:translateY(-4px); }
+.prod-emoji { font-size:1.8rem; display:block; margin-bottom:10px; }
+.prod-card h4 { font-size:.81rem; font-weight:600; line-height:1.3; }
+
+/* ── BRANDS ── */
+#brands { background:var(--black); padding-top:60px; padding-bottom:60px; }
+.brand-wrap { overflow:hidden; margin-top:40px; }
+.brand-track { display:flex; animation:brandScroll 30s linear infinite; }
+.brand-pill {
+  flex:0 0 auto; padding:8px 22px; border:1px solid rgba(255,255,255,.1);
+  border-radius:40px; margin:0 7px; font-size:.79rem; font-weight:600;
+  color:var(--grey-light); white-space:nowrap; transition:border-color .3s,color .3s;
+}
+.brand-pill:hover { border-color:var(--green); color:var(--green); }
+@keyframes brandScroll { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
+
+/* ── CLIENTS ── */
+#clients { background:var(--grey); }
+.clients-grid { display:grid; grid-template-columns:repeat(6,1fr); gap:2px; margin-top:40px; }
+.client-chip {
+  background:rgba(255,255,255,.04); border:1px solid rgba(255,255,255,.07);
+  padding:15px 10px; text-align:center; font-size:.76rem; font-weight:600;
+  color:var(--grey-light); transition:background .2s,color .2s;
+}
+.client-chip:hover { background:rgba(76,175,80,.1); color:var(--white); }
+
+/* ── CONTACT ── */
+#contact { background:var(--black); }
+.contact-grid { display:grid; grid-template-columns:1fr 1fr; gap:68px; margin-top:52px; align-items:start; }
+.contact-info h3 { font-family:'Syne',sans-serif; font-size:1.7rem; font-weight:800; margin-bottom:20px; line-height:1.2; }
+.contact-info h3 span { color:var(--green); }
+.contact-info .sub { color:var(--grey-light); font-size:.93rem; line-height:1.75; margin-bottom:28px; }
+.cinfo-row { display:flex; align-items:flex-start; gap:13px; margin-bottom:20px; }
+.cinfo-icon {
+  width:36px; height:36px; background:rgba(76,175,80,.1);
+  border:1px solid rgba(76,175,80,.25); border-radius:8px;
+  display:flex; align-items:center; justify-content:center; flex-shrink:0;
+}
+.cinfo-text strong { display:block; font-size:.77rem; color:var(--grey-light); margin-bottom:2px; }
+.cinfo-text span { font-size:.87rem; }
+.cinfo-text a { color:var(--white); text-decoration:none; }
+.cinfo-text a:hover { color:var(--green); }
+.c-form { display:flex; flex-direction:column; gap:13px; }
+.c-form-row { display:grid; grid-template-columns:1fr 1fr; gap:13px; }
+.c-form input, .c-form textarea {
+  background:rgba(255,255,255,.05); border:1px solid rgba(255,255,255,.1);
+  border-radius:6px; padding:12px 14px; color:var(--white);
+  font-family:'Space Grotesk',sans-serif; font-size:.87rem; outline:none;
+  transition:border-color .2s; width:100%;
+}
+body.bn .c-form input, body.bn .c-form textarea { font-family:'Hind Siliguri',sans-serif; }
+.c-form input::placeholder, .c-form textarea::placeholder { color:rgba(255,255,255,.3); }
+.c-form input:focus, .c-form textarea:focus { border-color:var(--green); }
+.c-form textarea { resize:vertical; min-height:120px; }
+.c-form .send-btn {
+  background:var(--green); color:var(--black); font-family:'Space Grotesk',sans-serif;
+  font-weight:700; font-size:.87rem; letter-spacing:.05em; padding:13px 28px;
+  border:none; border-radius:6px; cursor:pointer; align-self:flex-start;
+  transition:background .2s,transform .2s;
+}
+.c-form .send-btn:hover { background:var(--accent); transform:translateY(-2px); }
+
+/* ── FOOTER ── */
+footer {
+  background:var(--grey); padding:32px 56px;
+  display:flex; align-items:center; justify-content:space-between;
+  border-top:1px solid rgba(255,255,255,.06); flex-wrap:wrap; gap:14px;
+}
+.footer-logo { display:flex; align-items:center; gap:9px; font-family:'Syne',sans-serif; font-weight:800; font-size:1.1rem; color:var(--white); text-decoration:none; }
+.footer-logo .g { color:var(--green); }
+.footer-copy { font-size:.75rem; color:var(--grey-light); }
+.footer-links { display:flex; gap:22px; list-style:none; }
+.footer-links a { color:var(--grey-light); text-decoration:none; font-size:.8rem; transition:color .2s; }
+.footer-links a:hover { color:var(--green); }
+
+/* ── REVEAL ── */
+.reveal { opacity:0; transform:translateY(26px); transition:opacity .7s,transform .7s; }
+.reveal.vis { opacity:1; transform:translateY(0); }
+
+/* ── CURSOR ── */
+#cursor-glow {
+  position:fixed; width:400px; height:400px; pointer-events:none; z-index:9999;
+  background:radial-gradient(circle,rgba(76,175,80,.06) 0%,transparent 70%);
+  transform:translate(-50%,-50%); transition:left .08s,top .08s;
+}
+
+/* ══════════════════════════════════════
+   RESPONSIVE
+══════════════════════════════════════ */
+@media (max-width:1100px) {
+  #navbar { padding:15px 32px; }
+  #hero { padding:100px 32px 64px; }
+  section { padding:72px 32px; }
+  #stats { padding:52px 32px; }
+  footer { padding:28px 32px; }
+}
+@media (max-width:900px) {
+  #navbar { padding:12px 18px; }
+  .nav-links { display:none !important; }
+  .nav-burger { display:flex; }
+
+  #hero { padding:88px 18px 56px; flex-direction:column; align-items:flex-start; }
+  .hero-stats { position:static; margin-top:36px; flex-wrap:wrap; gap:24px; }
+  .hs { text-align:left; }
+  section { padding:56px 18px; }
+  #stats { padding:48px 18px; grid-template-columns:1fr 1fr; gap:20px; }
+  .why-grid { grid-template-columns:1fr; gap:40px; margin-top:36px; }
+  .svc-grid { grid-template-columns:1fr 1fr; }
+  .clients-grid { grid-template-columns:repeat(3,1fr); }
+  .contact-grid { grid-template-columns:1fr; gap:40px; margin-top:36px; }
+  footer { flex-direction:column; align-items:flex-start; padding:24px 18px; }
+  .footer-links { display:none; }
+}
+@media (max-width:600px) {
+  .hero-h1 { font-size:clamp(2.3rem,9vw,3.4rem); }
+  .svc-grid { grid-template-columns:1fr; }
+  .clients-grid { grid-template-columns:repeat(2,1fr); }
+  .c-form-row { grid-template-columns:1fr; }
+  .hs-num { font-size:2rem; }
+}
+@media (max-width:380px) {
+  .hero-btns { flex-direction:column; }
+  .btn-p,.btn-g { width:100%; text-align:center; }
+  .clients-grid { grid-template-columns:1fr 1fr; }
+}
+@media (prefers-reduced-motion:reduce) {
+  *, .ticker-inner, .brand-track, .hero-glow { animation:none !important; transition:none !important; }
+}
+</style>
+</head>
+<body>
+
+<div id="cursor-glow"></div>
+
+<!-- ══ MOBILE DRAWER ══ -->
+<div class="nav-drawer" id="navDrawer">
+  <div class="d-lang">
+    <button class="on" id="dEN" onclick="setLang('en')">EN</button>
+    <div class="sep"></div>
+    <button id="dBN" onclick="setLang('bn')">বাং</button>
+  </div>
+  <a href="#why"      onclick="closeDrawer()" data-en="Why Us"       data-bn="কেন আমরা">Why Us</a>
+  <a href="#services" onclick="closeDrawer()" data-en="Services"     data-bn="সেবাসমূহ">Services</a>
+  <a href="#products" onclick="closeDrawer()" data-en="Products"     data-bn="পণ্যসমূহ">Products</a>
+  <a href="#clients"  onclick="closeDrawer()" data-en="Clients"      data-bn="ক্লায়েন্ট">Clients</a>
+  <a href="#contact"  onclick="closeDrawer()" class="d-cta"
+     data-en="Get in Touch" data-bn="যোগাযোগ করুন">Get in Touch</a>
+</div>
+
+<!-- ══ NAVBAR ══ -->
+<nav id="navbar">
+
+  <!-- Logo -->
+  <a href="#hero" class="nav-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="18" y="0"  width="10" height="22" fill="#4CAF50"/>
+        <rect x="0"  y="14" width="22" height="10" fill="#4CAF50"/>
+        <rect x="0"  y="24" width="18" height="16" fill="#0D0D0D"/>
+        <rect x="10" y="24" width="8"  height="8"  fill="#1A1A1A"/>
+      </svg>
+    </div>
+    Easy<span class="g">Link</span>
+  </a>
+
+  <!-- Desktop nav links (hidden on mobile via media query) -->
+  <ul class="nav-links" id="navLinks">
+    <li><a href="#why"      data-en="Why Us"       data-bn="কেন আমরা">Why Us</a></li>
+    <li><a href="#services" data-en="Services"     data-bn="সেবাসমূহ">Services</a></li>
+    <li><a href="#products" data-en="Products"     data-bn="পণ্যসমূহ">Products</a></li>
+    <li><a href="#clients"  data-en="Clients"      data-bn="ক্লায়েন্ট">Clients</a></li>
+    <li><a href="#contact"  class="cta" data-en="Get in Touch" data-bn="যোগাযোগ করুন">Get in Touch</a></li>
+  </ul>
+
+  <!-- Right cluster: always visible -->
+  <div class="nav-end">
+    <!-- EN | বাং -->
+    <div class="lang-pill">
+      <button class="on" id="pEN" onclick="setLang('en')">EN</button>
+      <div class="sep"></div>
+      <button id="pBN" onclick="setLang('bn')">বাং</button>
+    </div>
+    <!-- Hamburger (mobile only) -->
+    <button class="nav-burger" id="burger" aria-label="Menu" onclick="toggleDrawer()">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+
+</nav>
+
+<!-- ══ HERO ══ -->
+<section id="hero">
+  <div class="hero-grid"></div>
+  <div class="hero-glow"></div>
+  <div class="hero-body">
+    <div class="hero-eyebrow" data-en="Since 2008 · Dhaka, Bangladesh" data-bn="২০০৮ সাল থেকে · ঢাকা, বাংলাদেশ">Since 2008 · Dhaka, Bangladesh</div>
+    <h1 class="hero-h1">
+      <span class="ln"     data-en="Corporate"      data-bn="কর্পোরেট">Corporate</span>
+      <span class="ln gw"  data-en="Digitalization" data-bn="ডিজিটালাইজেশন">Digitalization</span>
+      <span class="ln ow"  id="typed">Solved.</span>
+    </h1>
+    <p class="hero-sub"
+       data-en="15+ years connecting Bangladesh's leading enterprises with network infrastructure, cybersecurity, server solutions, and full-stack IT services. One partner. Every layer."
+       data-bn="১৫+ বছর ধরে বাংলাদেশের শীর্ষ প্রতিষ্ঠানগুলোকে নেটওয়ার্ক অবকাঠামো, সাইবার নিরাপত্তা, সার্ভার সমাধান এবং সম্পূর্ণ আইটি সেবার সাথে যুক্ত করছি। একটি অংশীদার। প্রতিটি স্তরে।">
+      15+ years connecting Bangladesh's leading enterprises with network infrastructure, cybersecurity, server solutions, and full-stack IT services. One partner. Every layer.
+    </p>
+    <div class="hero-btns">
+      <a href="#services" class="btn-p" data-en="Explore Services"       data-bn="সেবা দেখুন">Explore Services</a>
+      <a href="#contact"  class="btn-g" data-en="Talk to an Expert →"    data-bn="বিশেষজ্ঞের সাথে কথা বলুন →">Talk to an Expert →</a>
+    </div>
+  </div>
+  <div class="hero-stats">
+    <div class="hs">
+      <span class="hs-num">15<span class="ac">+</span></span>
+      <span class="hs-lbl" data-en="Years Active"   data-bn="বছরের অভিজ্ঞতা">Years Active</span>
+    </div>
+    <div class="hs">
+      <span class="hs-num">35<span class="ac">+</span></span>
+      <span class="hs-lbl" data-en="Clients Served" data-bn="ক্লায়েন্ট">Clients Served</span>
+    </div>
+    <div class="hs">
+      <span class="hs-num">4</span>
+      <span class="hs-lbl" data-en="Core Domains"   data-bn="মূল বিভাগ">Core Domains</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ TICKER ══ -->
+<div class="ticker-wrap">
+  <div class="ticker-inner">
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Network Solutions"       data-bn="নেটওয়ার্ক সমাধান">Network Solutions</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Server Infrastructure"   data-bn="সার্ভার অবকাঠামো">Server Infrastructure</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="CCTV & Access Control"   data-bn="সিসিটিভি ও অ্যাক্সেস কন্ট্রোল">CCTV & Access Control</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Firewall & Cybersecurity" data-bn="ফায়ারওয়াল ও সাইবার নিরাপত্তা">Firewall & Cybersecurity</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="ERP & Software"           data-bn="ইআরপি ও সফটওয়্যার">ERP & Software</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Digital Marketing"        data-bn="ডিজিটাল মার্কেটিং">Digital Marketing</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="IP PABX Systems"          data-bn="আইপি পিএবিএক্স সিস্টেম">IP PABX Systems</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Data Center Design"       data-bn="ডেটা সেন্টার ডিজাইন">Data Center Design</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Network Solutions"       data-bn="নেটওয়ার্ক সমাধান">Network Solutions</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Server Infrastructure"   data-bn="সার্ভার অবকাঠামো">Server Infrastructure</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="CCTV & Access Control"   data-bn="সিসিটিভি ও অ্যাক্সেস কন্ট্রোল">CCTV & Access Control</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Firewall & Cybersecurity" data-bn="ফায়ারওয়াল ও সাইবার নিরাপত্তা">Firewall & Cybersecurity</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="ERP & Software"           data-bn="ইআরপি ও সফটওয়্যার">ERP & Software</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Digital Marketing"        data-bn="ডিজিটাল মার্কেটিং">Digital Marketing</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="IP PABX Systems"          data-bn="আইপি পিএবিএক্স সিস্টেম">IP PABX Systems</span></span>
+    <span class="ticker-item"><span class="ticker-dot"></span><span data-en="Data Center Design"       data-bn="ডেটা সেন্টার ডিজাইন">Data Center Design</span></span>
+  </div>
+</div>
+
+<!-- ══ WHY US ══ -->
+<section id="why">
+  <div class="why-grid">
+    <div class="why-intro reveal">
+      <div class="sec-label" data-en="Why Easy Link" data-bn="কেন ইজি লিংক">Why Easy Link</div>
+      <h2 class="sec-title" data-en="What keeps IT managers up at night" data-bn="যা আইটি ম্যানেজারদের রাতের ঘুম কেড়ে নেয়">What keeps IT managers up at night</h2>
+      <p data-en="Bangladeshi enterprises face a distinct set of challenges: vendors who disappear after installation, fragmented solutions, and zero local support when something fails at 11 PM. Easy Link was built around these exact pain points."
+         data-bn="বাংলাদেশি প্রতিষ্ঠানগুলো স্বতন্ত্র চ্যালেঞ্জের মুখোমুখি: ইনস্টলেশনের পরে উধাও ভেন্ডর, বিচ্ছিন্ন সমাধান, এবং রাত ১১টায় কোনো স্থানীয় সাপোর্ট নেই। এই সমস্যাগুলোকে কেন্দ্র করেই তৈরি ইজি লিংক।">
+        Bangladeshi enterprises face a distinct set of challenges: vendors who disappear after installation, fragmented solutions, and zero local support when something fails at 11 PM. Easy Link was built around these exact pain points.
+      </p>
+      <ul class="pain-list">
+        <li class="pain-item">
+          <div class="pain-icon">⚡</div>
+          <div class="pain-text">
+            <strong data-en="Downtime kills productivity" data-bn="ডাউনটাইম উৎপাদনশীলতা নষ্ট করে">Downtime kills productivity</strong>
+            <span data-en="Network outages cost enterprises BDT 2–5 lakh per hour. Most BD vendors lack 24/7 SLA-backed support." data-bn="নেটওয়ার্ক বিভ্রাট প্রতি ঘণ্টায় ২–৫ লাখ টাকা ক্ষতি করে। বেশিরভাগ ভেন্ডরের ২৪/৭ এসএলএ সাপোর্ট নেই।">Network outages cost enterprises BDT 2–5 lakh per hour. Most BD vendors lack 24/7 SLA-backed support.</span>
+          </div>
+        </li>
+        <li class="pain-item">
+          <div class="pain-icon">🔐</div>
+          <div class="pain-text">
+            <strong data-en="Cybersecurity gaps are widening" data-bn="সাইবার নিরাপত্তার ফাঁক বাড়ছে">Cybersecurity gaps are widening</strong>
+            <span data-en="80%+ of Dhaka SMEs have no UTM firewall. Ransomware attacks in BD grew 3× since 2022." data-bn="ঢাকার ৮০%+ এসএমইতে কোনো ইউটিএম ফায়ারওয়াল নেই। ২০২২ সাল থেকে র‌্যানসমওয়্যার আক্রমণ ৩ গুণ বেড়েছে।">80%+ of Dhaka SMEs have no UTM firewall. Ransomware attacks in BD grew 3× since 2022.</span>
+          </div>
+        </li>
+        <li class="pain-item">
+          <div class="pain-icon">🧩</div>
+          <div class="pain-text">
+            <strong data-en="Too many vendors, no single accountability" data-bn="অনেক ভেন্ডর, কোনো একক দায়বদ্ধতা নেই">Too many vendors, no single accountability</strong>
+            <span data-en="Hardware from one, software from another — nobody owns the whole picture." data-bn="হার্ডওয়্যার এক জায়গা, সফটওয়্যার আরেক জায়গা — কেউ সম্পূর্ণ দায়িত্ব নেয় না।">Hardware from one, software from another — nobody owns the whole picture.</span>
+          </div>
+        </li>
+        <li class="pain-item">
+          <div class="pain-icon">📈</div>
+          <div class="pain-text">
+            <strong data-en="Digital transformation stalls without guidance" data-bn="গাইডেন্স ছাড়া ডিজিটাল রূপান্তর থমকে যায়">Digital transformation stalls without guidance</strong>
+            <span data-en="IT teams lack a roadmap partner who understands the Bangladeshi enterprise context." data-bn="আইটি দলের দরকার এমন একজন অংশীদার যে বাংলাদেশি প্রেক্ষাপট বোঝে।">IT teams lack a roadmap partner who understands the Bangladeshi enterprise context.</span>
+          </div>
+        </li>
+      </ul>
+    </div>
+    <div class="diff-list reveal">
+      <div class="diff-card">
+        <h4 data-en="End-to-End Under One Roof"        data-bn="এক ছাদের নিচে সম্পূর্ণ সমাধান">End-to-End Under One Roof</h4>
+        <p  data-en="Network, server, hardware, software, and security — one accountable team since 2008." data-bn="নেটওয়ার্ক, সার্ভার, হার্ডওয়্যার, সফটওয়্যার এবং নিরাপত্তা — ২০০৮ থেকে একটি দায়িত্বশীল দল।">Network, server, hardware, software, and security — one accountable team since 2008.</p>
+      </div>
+      <div class="diff-card">
+        <h4 data-en="Tier-1 Brand Partnerships"        data-bn="শীর্ষ ব্র্যান্ডের অংশীদারিত্ব">Tier-1 Brand Partnerships</h4>
+        <p  data-en="Cisco, Fortinet, Hikvision, Dell, Huawei — authorised supply chain, genuine hardware." data-bn="সিসকো, ফোর্টিনেট, হিকভিশন, ডেল, হুয়াওয়ে — অনুমোদিত সাপ্লাই চেইন, আসল হার্ডওয়্যার।">Cisco, Fortinet, Hikvision, Dell, Huawei — authorised supply chain, genuine hardware.</p>
+      </div>
+      <div class="diff-card">
+        <h4 data-en="Local Expertise, Enterprise Standards" data-bn="স্থানীয় দক্ষতা, এন্টারপ্রাইজ মান">Local Expertise, Enterprise Standards</h4>
+        <p  data-en="Merul Badda HQ, Dhaka-1212. On-site within hours. We know local power and bandwidth realities." data-bn="মেরুল বাড্ডা সদর দফতর, ঢাকা-১২১২। ঘণ্টার মধ্যে সাইটে।">Merul Badda HQ, Dhaka-1212. On-site within hours. We know local power and bandwidth realities.</p>
+      </div>
+      <div class="diff-card">
+        <h4 data-en="Proven at Scale"                  data-bn="বৃহৎ পরিসরে প্রমাণিত">Proven at Scale</h4>
+        <p  data-en="BMW, IDLC Finance, Islami Bank, Daffodil University — enterprises that can't afford mistakes." data-bn="বিএমডব্লিউ, আইডিএলসি ফাইন্যান্স, ইসলামী ব্যাংক, ড্যাফোডিল বিশ্ববিদ্যালয়।">BMW, IDLC Finance, Islami Bank, Daffodil University — enterprises that can't afford mistakes.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ══ SERVICES ══ -->
+<section id="services">
+  <div class="reveal">
+    <div class="sec-label" data-en="What We Do"    data-bn="আমরা যা করি">What We Do</div>
+    <h2 class="sec-title" data-en="Core Services"  data-bn="মূল সেবাসমূহ">Core Services</h2>
+  </div>
+  <div class="svc-grid reveal">
+    <div class="svc-card"><div class="svc-num">01</div><span class="svc-icon">🌐</span><h3 data-en="Network Solutions"    data-bn="নেটওয়ার্ক সমাধান">Network Solutions</h3><p data-en="LAN/WAN design, enterprise WiFi, IT infrastructure deployment, and ongoing network management." data-bn="ল্যান/ওয়ান ডিজাইন, এন্টারপ্রাইজ ওয়াইফাই এবং নেটওয়ার্ক পরিচালনা।">LAN/WAN design, enterprise WiFi, IT infrastructure deployment, and ongoing network management.</p></div>
+    <div class="svc-card"><div class="svc-num">02</div><span class="svc-icon">🖥️</span><h3 data-en="Server Solutions"     data-bn="সার্ভার সমাধান">Server Solutions</h3><p data-en="Email servers (Google Workspace, M365), NAS/SAN storage, virtualisation, and backup systems." data-bn="ইমেইল সার্ভার (গুগল ওয়ার্কস্পেস, এম৩৬৫), এনএএস/স্যান স্টোরেজ এবং ব্যাকআপ।">Email servers (Google Workspace, M365), NAS/SAN storage, virtualisation, and backup systems.</p></div>
+    <div class="svc-card"><div class="svc-num">03</div><span class="svc-icon">🔒</span><h3 data-en="Cybersecurity"        data-bn="সাইবার নিরাপত্তা">Cybersecurity</h3><p data-en="Firewall/UTM deployment, antivirus solutions, and security audits with Fortinet & Sophos." data-bn="ফায়ারওয়াল/ইউটিএম স্থাপন, অ্যান্টিভাইরাস এবং ফোর্টিনেট ও সফোসের সাথে নিরাপত্তা অডিট।">Firewall/UTM deployment, antivirus solutions, and security audits with Fortinet & Sophos.</p></div>
+    <div class="svc-card"><div class="svc-num">04</div><span class="svc-icon">📹</span><h3 data-en="Surveillance & Access" data-bn="নজরদারি ও অ্যাক্সেস">Surveillance & Access</h3><p data-en="IP CCTV (Dahua, Hikvision), biometric access control, and time attendance via ZKTeco." data-bn="আইপি সিসিটিভি (দাহুয়া, হিকভিশন), বায়োমেট্রিক অ্যাক্সেস কন্ট্রোল এবং জেডকেটেকো।">IP CCTV (Dahua, Hikvision), biometric access control, and time attendance via ZKTeco.</p></div>
+    <div class="svc-card"><div class="svc-num">05</div><span class="svc-icon">🏗️</span><h3 data-en="Data Center"          data-bn="ডেটা সেন্টার">Data Center</h3><p data-en="Full data center design, structured cabling, fiber optic, UPS, and power management." data-bn="সম্পূর্ণ ডেটা সেন্টার ডিজাইন, স্ট্রাকচার্ড ক্যাবলিং, ফাইবার অপটিক এবং ইউপিএস।">Full data center design, structured cabling, fiber optic, UPS, and power management.</p></div>
+    <div class="svc-card"><div class="svc-num">06</div><span class="svc-icon">💻</span><h3 data-en="Software & Web"       data-bn="সফটওয়্যার ও ওয়েব">Software & Web</h3><p data-en="ERP/Payroll/Inventory systems, e-commerce, custom software, and digital marketing." data-bn="ইআরপি/পেরোল/ইনভেন্টরি সিস্টেম, ই-কমার্স, কাস্টম সফটওয়্যার এবং ডিজিটাল মার্কেটিং।">ERP/Payroll/Inventory systems, e-commerce, custom software, and digital marketing.</p></div>
+  </div>
+</section>
+
+<!-- ══ STATS ══ -->
+<div id="stats">
+  <div class="reveal"><span class="stat-big">15+</span><span class="stat-desc" data-en="Years of Operation" data-bn="বছরের অভিজ্ঞতা">Years of Operation</span></div>
+  <div class="reveal"><span class="stat-big">35+</span><span class="stat-desc" data-en="Enterprise Clients"  data-bn="এন্টারপ্রাইজ ক্লায়েন্ট">Enterprise Clients</span></div>
+  <div class="reveal"><span class="stat-big">24</span> <span class="stat-desc" data-en="Brand Partners"      data-bn="ব্র্যান্ড অংশীদার">Brand Partners</span></div>
+  <div class="reveal"><span class="stat-big">4</span>  <span class="stat-desc" data-en="Solution Domains"    data-bn="সমাধান বিভাগ">Solution Domains</span></div>
+</div>
+
+<!-- ══ PRODUCTS ══ -->
+<section id="products">
+  <div class="reveal">
+    <div class="sec-label"  data-en="Our Offerings"       data-bn="আমাদের অফারসমূহ">Our Offerings</div>
+    <h2 class="sec-title"   data-en="Products & Solutions" data-bn="পণ্য ও সমাধান">Products & Solutions</h2>
+  </div>
+  <div class="prod-scroll reveal">
+    <div class="prod-card"><span class="prod-emoji">🔌</span><h4 data-en="Structured LAN"    data-bn="স্ট্রাকচার্ড ল্যান">Structured LAN</h4></div>
+    <div class="prod-card"><span class="prod-emoji">💡</span><h4 data-en="Fiber Optics"       data-bn="ফাইবার অপটিক্স">Fiber Optics</h4></div>
+    <div class="prod-card"><span class="prod-emoji">🏢</span><h4 data-en="Data Center"        data-bn="ডেটা সেন্টার">Data Center</h4></div>
+    <div class="prod-card"><span class="prod-emoji">🔀</span><h4 data-en="Ethernet Switching" data-bn="ইথারনেট সুইচিং">Ethernet Switching</h4></div>
+    <div class="prod-card"><span class="prod-emoji">📡</span><h4 data-en="Enterprise WLAN"    data-bn="এন্টারপ্রাইজ ডব্লিউল্যান">Enterprise WLAN</h4></div>
+    <div class="prod-card"><span class="prod-emoji">📧</span><h4 data-en="Mail Server"        data-bn="মেইল সার্ভার">Mail Server</h4></div>
+    <div class="prod-card"><span class="prod-emoji">💾</span><h4 data-en="NAS & SAN"          data-bn="এনএএস ও স্যান">NAS & SAN</h4></div>
+    <div class="prod-card"><span class="prod-emoji">🛡️</span><h4 data-en="Firewall / UTM"    data-bn="ফায়ারওয়াল / ইউটিএম">Firewall / UTM</h4></div>
+    <div class="prod-card"><span class="prod-emoji">📺</span><h4 data-en="Smart Conference"   data-bn="স্মার্ট কনফারেন্স">Smart Conference</h4></div>
+    <div class="prod-card"><span class="prod-emoji">🔊</span><h4 data-en="Audio Visual"       data-bn="অডিও ভিজ্যুয়াল">Audio Visual</h4></div>
+    <div class="prod-card"><span class="prod-emoji">📷</span><h4 data-en="IP Surveillance"    data-bn="আইপি নজরদারি">IP Surveillance</h4></div>
+    <div class="prod-card"><span class="prod-emoji">🖐️</span><h4 data-en="Access Control"    data-bn="অ্যাক্সেস কন্ট্রোল">Access Control</h4></div>
+    <div class="prod-card"><span class="prod-emoji">📊</span><h4 data-en="ERP Solution"       data-bn="ইআরপি সমাধান">ERP Solution</h4></div>
+    <div class="prod-card"><span class="prod-emoji">☎️</span><h4 data-en="IP PABX"           data-bn="আইপি পিএবিএক্স">IP PABX</h4></div>
+  </div>
+</section>
+
+<!-- ══ BRANDS ══ -->
+<section id="brands">
+  <div class="reveal">
+    <div class="sec-label" data-en="Trusted By"     data-bn="যাদের বিশ্বাস অর্জন করেছি">Trusted By</div>
+    <h2 class="sec-title"  data-en="Brand Partners" data-bn="ব্র্যান্ড অংশীদার">Brand Partners</h2>
+  </div>
+  <div class="brand-wrap">
+    <div class="brand-track">
+      <span class="brand-pill">Cisco</span><span class="brand-pill">Dell</span><span class="brand-pill">Fortinet</span><span class="brand-pill">Huawei</span><span class="brand-pill">Hikvision</span><span class="brand-pill">Dahua</span><span class="brand-pill">Sophos</span><span class="brand-pill">MikroTik</span><span class="brand-pill">ZKTeco</span><span class="brand-pill">Bosch</span><span class="brand-pill">Lenovo</span><span class="brand-pill">TP-Link</span><span class="brand-pill">Logitech</span><span class="brand-pill">ASUS</span><span class="brand-pill">Grandstream</span><span class="brand-pill">Panasonic</span><span class="brand-pill">ESET</span><span class="brand-pill">Epson</span>
+      <span class="brand-pill">Cisco</span><span class="brand-pill">Dell</span><span class="brand-pill">Fortinet</span><span class="brand-pill">Huawei</span><span class="brand-pill">Hikvision</span><span class="brand-pill">Dahua</span><span class="brand-pill">Sophos</span><span class="brand-pill">MikroTik</span><span class="brand-pill">ZKTeco</span><span class="brand-pill">Bosch</span><span class="brand-pill">Lenovo</span><span class="brand-pill">TP-Link</span><span class="brand-pill">Logitech</span><span class="brand-pill">ASUS</span><span class="brand-pill">Grandstream</span><span class="brand-pill">Panasonic</span><span class="brand-pill">ESET</span><span class="brand-pill">Epson</span>
+    </div>
+  </div>
+</section>
+
+<!-- ══ CLIENTS ══ -->
+<section id="clients">
+  <div class="reveal">
+    <div class="sec-label" data-en="Our Portfolio"      data-bn="আমাদের পোর্টফোলিও">Our Portfolio</div>
+    <h2 class="sec-title"  data-en="Valuable Customers" data-bn="মূল্যবান গ্রাহকবৃন্দ">Valuable Customers</h2>
+  </div>
+  <div class="clients-grid reveal">
+    <div class="client-chip">BMW</div><div class="client-chip">IDLC Finance</div>
+    <div class="client-chip">Islami Bank</div><div class="client-chip">Daffodil University</div>
+    <div class="client-chip">WorldFish</div><div class="client-chip">IRRI</div>
+    <div class="client-chip">United Group</div><div class="client-chip">Sikder Group</div>
+    <div class="client-chip">Keya Group</div><div class="client-chip">Hellmann</div>
+    <div class="client-chip">Sinohydro</div><div class="client-chip">DMTCL</div>
+    <div class="client-chip">TOA Corp</div><div class="client-chip">Runner</div>
+    <div class="client-chip">PalmPay</div><div class="client-chip">Unimart</div>
+    <div class="client-chip">Orion</div><div class="client-chip">DCCI</div>
+    <div class="client-chip">JC Group</div><div class="client-chip">Pioneer</div>
+    <div class="client-chip">IPCO Power</div><div class="client-chip">CNS Limited</div>
+    <div class="client-chip">NCSC</div><div class="client-chip">BEOL</div>
+  </div>
+</section>
+
+<!-- ══ CONTACT ══ -->
+<section id="contact">
+  <div class="contact-grid">
+    <div class="contact-info reveal">
+      <div class="sec-label" data-en="Get in Touch"  data-bn="যোগাযোগ করুন">Get in Touch</div>
+      <h3><span data-en="Ready to digitalize your business?" data-bn="আপনার ব্যবসা ডিজিটালাইজ করতে প্রস্তুত?">Ready to <span>digitalize</span> your business?</span></h3>
+      <p class="sub"
+         data-en="Whether you need a network audit, a data center build-out, or a full digital transformation roadmap — our team in Dhaka is ready."
+         data-bn="নেটওয়ার্ক অডিট, ডেটা সেন্টার নির্মাণ, বা সম্পূর্ণ ডিজিটাল রূপান্তরের রোডম্যাপ — ঢাকায় আমাদের দল প্রস্তুত।">
+        Whether you need a network audit, a data center build-out, or a full digital transformation roadmap — our team in Dhaka is ready.
+      </p>
+      <div class="cinfo-row">
+        <div class="cinfo-icon">📍</div>
+        <div class="cinfo-text">
+          <strong data-en="Office" data-bn="অফিস">Office</strong>
+          <span data-en="House 20 (3rd Floor), Road 11, DIT Project, Merul Badda, Dhaka-1212" data-bn="বাড়ি ২০ (৩য় তলা), রোড ১১, ডিআইটি প্রজেক্ট, মেরুল বাড্ডা, ঢাকা-১২১২">House 20 (3rd Floor), Road 11, DIT Project, Merul Badda, Dhaka-1212</span>
+        </div>
+      </div>
+      <div class="cinfo-row">
+        <div class="cinfo-icon">📞</div>
+        <div class="cinfo-text">
+          <strong data-en="Phone" data-bn="ফোন">Phone</strong>
+          <span><a href="tel:+8809611677770">+8809611-677770</a></span>
+        </div>
+      </div>
+      <div class="cinfo-row">
+        <div class="cinfo-icon">✉️</div>
+        <div class="cinfo-text">
+          <strong data-en="Email" data-bn="ইমেইল">Email</strong>
+          <span><a href="mailto:info@easylinkbd.net">info@easylinkbd.net</a></span>
+        </div>
+      </div>
+    </div>
+    <div class="reveal">
+      <form class="c-form" onsubmit="sendForm(event)">
+        <div class="c-form-row">
+          <input id="fn" type="text"  placeholder="Your Name"      required />
+          <input id="fe" type="email" placeholder="Email Address"  required />
+        </div>
+        <input id="fs" type="text" placeholder="Subject" />
+        <textarea id="fm" placeholder="Tell us about your project…"></textarea>
+        <button type="submit" class="send-btn" id="sendBtn"
+                data-en="Send Message →" data-bn="বার্তা পাঠান →">Send Message →</button>
+      </form>
+    </div>
+  </div>
+</section>
+
+<!-- ══ FOOTER ══ -->
+<footer>
+  <a href="#hero" class="footer-logo">
+    <div class="nav-logo-icon">
+      <svg viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="18" y="0"  width="10" height="22" fill="#4CAF50"/>
+        <rect x="0"  y="14" width="22" height="10" fill="#4CAF50"/>
+        <rect x="0"  y="24" width="18" height="16" fill="#2C2C2C"/>
+        <rect x="10" y="24" width="8"  height="8"  fill="#1A1A1A"/>
+      </svg>
+    </div>
+    Easy<span class="g">Link</span>
+  </a>
+  <p class="footer-copy"
+     data-en="© 2025 Easy Link. A Solution For Corporate Digitalization. Dhaka, Bangladesh."
+     data-bn="© ২০২৫ ইজি লিংক। কর্পোরেট ডিজিটালাইজেশনের সমাধান। ঢাকা, বাংলাদেশ।">
+    © 2025 Easy Link. A Solution For Corporate Digitalization. Dhaka, Bangladesh.
+  </p>
+  <ul class="footer-links">
+    <li><a href="#why"      data-en="Why Us"   data-bn="কেন আমরা">Why Us</a></li>
+    <li><a href="#services" data-en="Services" data-bn="সেবাসমূহ">Services</a></li>
+    <li><a href="#contact"  data-en="Contact"  data-bn="যোগাযোগ">Contact</a></li>
+  </ul>
+</footer>
+
+<script>
+/* ── Cursor glow ── */
+const cg = document.getElementById('cursor-glow');
+document.addEventListener('mousemove', e => { cg.style.left=e.clientX+'px'; cg.style.top=e.clientY+'px'; });
+
+/* ── Mobile drawer ── */
+function toggleDrawer() {
+  const d=document.getElementById('navDrawer'), b=document.getElementById('burger');
+  d.classList.toggle('open'); b.classList.toggle('open');
+  document.body.style.overflow = d.classList.contains('open') ? 'hidden' : '';
+}
+function closeDrawer() {
+  document.getElementById('navDrawer').classList.remove('open');
+  document.getElementById('burger').classList.remove('open');
+  document.body.style.overflow = '';
+}
+
+/* ── Language ── */
+let lang = 'en';
+let typedWords = ['Solved.','Connected.','Secured.','Optimized.'];
+function setLang(l) {
+  lang = l;
+  document.body.classList.toggle('bn', l==='bn');
+  document.documentElement.lang = l==='bn' ? 'bn' : 'en';
+  // toggle pill buttons
+  ['pEN','pBN','dEN','dBN'].forEach(id => {
+    const el=document.getElementById(id);
+    if(el) el.classList.toggle('on', (id.endsWith('EN') && l==='en') || (id.endsWith('BN') && l==='bn'));
+  });
+  // translate all data-en / data-bn elements
+  document.querySelectorAll('[data-en]').forEach(el => {
+    const t = el.getAttribute('data-'+l);
+    if(t) el.textContent = t;
+  });
+  // typed word pool
+  typedWords = l==='bn'
+    ? ['সমাধান হয়েছে।','সংযুক্ত।','সুরক্ষিত।','অপ্টিমাইজড।']
+    : ['Solved.','Connected.','Secured.','Optimized.'];
+  // form placeholders
+  const ph = l==='bn'
+    ? ['আপনার নাম','ইমেইল ঠিকানা','বিষয়','আপনার প্রজেক্ট সম্পর্কে জানান…']
+    : ['Your Name','Email Address','Subject','Tell us about your project…'];
+  ['fn','fe','fs','fm'].forEach((id,i) => { const el=document.getElementById(id); if(el) el.placeholder=ph[i]; });
+}
+
+/* ── Typed hero word ── */
+let ti=0;
+function runTyped() {
+  const el=document.getElementById('typed'); if(!el) return;
+  el.style.transition='opacity .4s';
+  setInterval(()=>{
+    el.style.opacity='0';
+    setTimeout(()=>{ ti=(ti+1)%typedWords.length; el.textContent=typedWords[ti]; el.style.opacity='1'; },420);
+  },3000);
+}
+setTimeout(runTyped,2200);
+
+/* ── Scroll reveal ── */
+const ro = new IntersectionObserver((entries)=>{
+  entries.forEach((e,i)=>{ if(e.isIntersecting){ setTimeout(()=>e.target.classList.add('vis'),i*70); ro.unobserve(e.target); } });
+},{threshold:.08});
+document.querySelectorAll('.reveal').forEach(r=>ro.observe(r));
+
+/* ── Counter ── */
+function animCount(el, target) {
+  let v=0; const suf=el.dataset.suf||''; const inc=target/(1800/16);
+  const t=setInterval(()=>{ v+=inc; if(v>=target){el.textContent=target+suf;clearInterval(t);}else el.textContent=Math.floor(v)+suf; },16);
+}
+const so = new IntersectionObserver(en=>{
+  en.forEach(e=>{ if(e.isIntersecting){
+    document.querySelectorAll('.stat-big').forEach(el=>{
+      const txt=el.textContent; el.dataset.suf=txt.replace(/[0-9]/g,''); animCount(el,parseInt(txt));
+    }); so.disconnect();
+  }});
+},{threshold:.3});
+const ss=document.getElementById('stats'); if(ss) so.observe(ss);
+
+/* ── Nav scroll shrink ── */
+window.addEventListener('scroll',()=>{
+  const nb=document.getElementById('navbar'), m=window.innerWidth<=900;
+  nb.style.padding = window.scrollY>60 ? (m?'9px 18px':'11px 32px') : (m?'12px 18px':'16px 56px');
+});
+
+/* ── Form ── */
+function sendForm(e) {
+  e.preventDefault();
+  const btn=document.getElementById('sendBtn');
+  btn.textContent = lang==='bn' ? 'পাঠানো হয়েছে! ✓' : 'Sent! ✓';
+  btn.style.background='#A8FF47';
+  setTimeout(()=>{ btn.textContent=lang==='bn'?'বার্তা পাঠান →':'Send Message →'; btn.style.background=''; },3000);
+}
+</script>
+</body>
+</html>
